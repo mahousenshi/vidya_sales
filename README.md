@@ -47,6 +47,7 @@ O sistema irá automaticamente rodar o seed.py para popular os bancos caso estej
 
 A aplicação segue uma estrutura modular para separar a lógica de banco de dados, modelos e rotas da API:
 
+'''
 .
 ├── app/
 │   ├── routes/
@@ -62,6 +63,7 @@ A aplicação segue uma estrutura modular para separar a lógica de banco de dad
 ├── Dockerfile            # Configuração da imagem Docker
 ├── docker-compose.yml    # Orquestração de containers localmente
 └── requirements.txt      # Dependências do sistema
+'''
 
 🌐 Endpoints Principais
 
