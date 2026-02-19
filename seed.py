@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from app.database import SessionLocal, nosql_db
+from app.database import SessionLocal, nosql_db, engine
 from app import models
 
 # Banco de dados
