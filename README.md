@@ -43,6 +43,26 @@ docker-compose up --build
 
 O sistema irá automaticamente rodar o seed.py para popular os bancos caso estejam vazios.
 
+🏗️ Estrutura do Projeto
+
+A aplicação segue uma estrutura modular para separar a lógica de banco de dados, modelos e rotas da API:
+
+.
+├── app/
+│   ├── routes/
+│   │   ├── sales.py      # Endpoints de API (lógica de negócios e cálculos)
+│   │   └── views.py      # Rotas de renderização das páginas (Frontend)
+│   ├── database.py       # Configuração e conexão com Postgres e MongoDB
+│   ├── main.py           # Inicialização do FastAPI e montagem das rotas
+│   ├── models.py         # Definição das tabelas SQL (SQLAlchemy)
+│   └── schemas.py        # Modelos de validação de dados (Pydantic)
+├── templates/            # Arquivos HTML (Dashboard e Index)
+├── seed.py               # Script para população inicial dos bancos de dados
+├── start.sh              # Script de inicialização (Startup)
+├── Dockerfile            # Configuração da imagem Docker
+├── docker-compose.yml    # Orquestração de containers localmente
+└── requirements.txt      # Dependências do sistema
+
 🌐 Endpoints Principais
 
 'GET /': Mensagem de boas-vindas e status da API.
