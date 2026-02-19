@@ -1,0 +1,36 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+.env
+
+# --- Variáveis de Ambiente (Segurança) ---
+# Ignoramos o .env real para não vazar senhas
+.env
+# Mas permitimos um exemplo para o avaliador saber o que preencher
+!.env.example
+
+# --- Docker ---
+.docker/
+# Ignora logs do docker se você os exportar
+*.log
+
+# --- Linux / Fedora ---
+.DS_Store
+.directory
+# Arquivos temporários do sistema
+*~
+
+# --- IDEs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Banco de Dados ---
+# Caso você use SQLite localmente para testes rápidos
+*.sqlite3
+*.db

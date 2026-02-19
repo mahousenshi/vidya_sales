@@ -1,0 +1,33 @@
+services:
+  # Base de Dados PostgreSQL
+  db_sql:
+    image: postgres:15
+    container_name: vidya_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: senha
+      POSTGRES_DB: vidya_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Aplicação FastAPI
+  web_app:
+    build: .
+    container_name: vidya_app
+    restart: always
+    # O Docker Compose lê automaticamente o arquivo .env na mesma pasta
+    env_file:
+      - .env
+    network_mode: host
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    depends_on:
+      - db_sql
+    # Removemos o db_nosql daqui, pois ele agora está no Atlas (Internet)
+
+volumes:
+  postgres_data:

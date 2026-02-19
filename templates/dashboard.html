@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Vidya All-in-One</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-6"><h1>Vidya System Test</h1></div>
+        <div class="col-md-6 text-end">
+            <a class="btn btn-primary" href="/docs">Acessar o Docs</a>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalVenda">➕ Nova Venda</button>
+            <button class="btn btn-primary" onclick="atualizarTudo()">🔄 Atualizar</button>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5>Faturamento Total</h5>
+                <h2 id="fat-total">R$ 0,00</h2>
+            </div>
+        </div>
+        <div class="col-md-8">
+
+            <div class="card shadow-sm p-3">
+                <div class="row">
+                    <button class="btn btn-primary col m-1" onclick="atualizarGrafico('categoria')">Categoria</button>
+                    <button class="btn btn-primary col m-1" onclick="atualizarGrafico('produto')">Produto</button>
+                </div>
+                <canvas id="meuGrafico" style="max-height: 200px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md">
+            <div class="input-group">
+                <span class="input-group-text">🔍</span>
+                <input type="text" id="inputBusca" class="form-control" placeholder="Procurar nos comentários...">
+                <button class="btn btn-outline-secondary" onclick="executarBusca()">Buscar</button>
+                <button class="btn btn-outline-danger" onclick="atualizarTudo()">Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm p-3">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr><th>Produto</th><th>Categoria</th><th>Qtd</th><th>Preço</th><th>Total</th></tr>
+            </thead>
+            <tbody id="tabela-corpo">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="modalVenda" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content"><form id="formVenda"><div class="modal-body">
+        <input type="text" id="p_name" class="form-control mb-2" placeholder="Produto" required>
+        <input type="text" id="cat" class="form-control mb-2" placeholder="Categoria" required>
+        <input type="number" id="qty" class="form-control mb-2" placeholder="Quantidade" required>
+        <input type="number" step="0.01" id="price" class="form-control mb-2" placeholder="Preço" required>
+        <textarea id="comm" class="form-control" placeholder="Comentário"></textarea>
+    </div><div class="modal-footer"><button type="submit" class="btn btn-success w-100">Salvar</button></div></form></div></div>
+</div>
+
+<script>
+// --- CONFIGURAÇÃO GLOBAL ---
+let meuGrafico = null;
+
+// Função utilitária
+const formatarMoeda = (valor) => {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(valor);
+};
+
+// --- 1. FUNÇÃO DE RENDERIZAÇÃO (O CORAÇÃO DA TELA) ---
+// Essa função recebe um array de objetos e desenha a tabela.
+function renderizarTabela(dados) {
+    const corpo = document.getElementById('tabela-corpo');
+    corpo.innerHTML = ""; // Limpa a tabela antes de desenhar
+
+    if (dados.length === 0) {
+        corpo.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Nenhum dado encontrado.</td></tr>`;
+        return;
+    }
+
+    dados.forEach(venda => {
+        var temComentario = "";
+        venda.comments.forEach(comentario =>
+            temComentario += comentario.comment + "; "
+        )
+        const iconeComentario = temComentario.length
+            ? `<span style="cursor:help; margin-left:8px; font-size: 1.2rem;" title="${temComentario}">💬</span>`
+            : "";
+        const linha = `
+            <tr>
+                <td>${venda.id}</td>
+                <td>
+                    <span class="fw-bold">${venda.product_name}</span>
+                    ${iconeComentario}
+                </td>
+                <td>${venda.quantity}</td>
+                <td>${formatarMoeda(venda.unit_price)}</td>
+                <td><strong>${formatarMoeda((venda.quantity * venda.unit_price).toFixed(2))}</strong></td>
+            </tr>
+        `;
+        corpo.innerHTML += linha;
+    });
+}
+
+// --- 2. FUNÇÃO DE ATUALIZAÇÃO GERAL (LISTAGEM) ---
+async function atualizarTudo() {
+    try {
+        // Busca vendas do Postgres (que você disse que já traz o comentário)
+        const res = await fetch('/api/sales/');
+        const vendas = await res.json();
+
+        renderizarTabela(vendas);
+        atualizarTotalGeral();
+        atualizarGrafico('categoria');
+    } catch (error) {
+        console.error("Erro ao listar vendas:", error);
+    }
+}
+
+// --- 3. FUNÇÃO DE BUSCA (FILTRO PELO MONGO) ---
+async function executarBusca() {
+    const termo = document.getElementById('inputBusca').value;
+
+    if (!termo) {
+        atualizarTudo(); // Se campo vazio, volta a listar tudo
+        return;
+    }
+
+    try {
+        // Chama o endpoint de busca que filtra no MongoDB
+        const res = await fetch(`/api/sales/search?q=${encodeURIComponent(termo)}`);
+        const resultados = await res.json();
+
+        console.log(resultados)
+
+        const vendas = [];
+        resultados.forEach(resultado => {
+            vendas.push(resultado.sale);
+        });
+
+        renderizarTabela(vendas);
+    } catch (error) {
+        console.error("Erro na busca:", error);
+        alert("Erro ao realizar busca nos comentários.");
+    }
+}
+
+// --- 4. FUNÇÃO DE CADASTRO (POST) ---
+document.getElementById('formVenda').onsubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+        product_name: document.getElementById('p_name').value,
+        category: document.getElementById('cat').value,
+        quantity: parseInt(document.getElementById('qty').value),
+        unit_price: parseFloat(document.getElementById('price').value),
+        comment: document.getElementById('comm').value,
+        created_at: new Date().toISOString()
+    };
+
+    try {
+        const res = await fetch('/api/sales/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            // Fecha o modal e limpa o form
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalVenda'));
+            modal.hide();
+            document.getElementById('formVenda').reset();
+
+            // Feedback de sucesso (Toast ou Alert)
+            alert("Adicionado com sucesso!");
+
+            // Recarrega a tela para mostrar a nova venda
+            atualizarTudo();
+        }
+    } catch (error) {
+        console.error("Erro ao salvar:", error);
+    }
+};
+
+// --- 5. ANALYTICS (GRÁFICO) ---
+async function atualizarGrafico(tipo) {
+
+    try {
+        const res = tipo == 'categoria' ? await fetch('/api/sales/quantity_categories') : await fetch('/api/sales/quantity_products');
+        const data = await res.json();
+
+        console.log(data);
+
+        // Desenha ou atualiza o Chart.js
+        const ctx = document.getElementById('meuGrafico');
+        if(!ctx) return;
+
+        if (meuGrafico) meuGrafico.destroy();
+
+        const labels = tipo == 'categoria' ? data.map(linha => linha.category) : data.map(linha => linha.product_name);;
+        const values = data.map(linha => linha.total);
+        const label = tipo == 'categoria' ? 'Quantidade por Categoria' : 'Quantidade por produto';
+
+        meuGrafico = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: values,
+                    backgroundColor: '#0d6efd'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    } catch (error) {
+        console.log("Erro ao carregar analytics");
+    }
+}
+
+// --- 6. Atualiza total ---
+async function atualizarTotalGeral() {
+    try {
+        const res = await fetch('/api/sales/total_revenue');
+        const data = await res.json();
+
+        // Atualiza faturamento total no card
+        const fatElement = document.getElementById('fat-total');
+        if(fatElement) fatElement.innerText = `${formatarMoeda(data.total_revenue)}`;
+    } catch (error) {
+        console.log("Erro ao carregar analytics");
+    }
+}
+
+
+// --- INICIALIZAÇÃO AO CARREGAR PÁGINA ---
+window.onload = atualizarTudo;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
