@@ -6,9 +6,6 @@ from app.database import engine
 from app import models
 import os
 
-# Banco de dados
-models.Base.metadata.create_all(bind=engine)
-
 base_dir = os.path.dirname(os.path.abspath(__file__))
 template_path = os.path.join(base_dir, "..", "templates")
 templates = Jinja2Templates(directory=template_path)

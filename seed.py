@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal, nosql_db
 from app import models
 
+# Banco de dados
+models.Base.metadata.create_all(bind=engine)
+
 # Listas para gerar dados aleatórios verossímeis
 CATEGORIAS = {
     "Eletrônicos": [
