@@ -87,13 +87,12 @@ def search_comments(
 
 # Total de vendas
 @router.get("/sales/total_revenue")
-def total_revenue(
-    db: Session = Depends(get_db),
-):
-    query = db.query(
-        func.sum(models.Sale.quantity * models.Sale.unit_price).label("total")
+def total_revenue(db: Session = Depends(get_db)):
+    result = db.query(
+        func.sum(models.Sale.quantity * models.Sale.unit_price)
     ).scalar()
-    total = float(results) if results else 0.0
+
+    total = float(result) if result else 0.0
 
     return {"total_revenue": total}
 
