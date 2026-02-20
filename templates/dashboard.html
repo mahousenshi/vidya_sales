@@ -108,7 +108,7 @@ function renderizarTabela(dados) {
                     ${iconeComentario}
                 </td>
                 <td>
-                    <span class="badge badge-primary">${venda.category}</span>
+                    <span class="badge rounded-pill text-bg-primary">${venda.category}</span>
                 </td>
                 <td>${venda.quantity}</td>
                 <td>${formatarMoeda(venda.unit_price)}</td>
@@ -118,8 +118,8 @@ function renderizarTabela(dados) {
         corpo.innerHTML += linha;
     });
     corpo.innerHTML += `
-            <tr>
-                <td colspan="5" class="text-right" >Quantidade total de vendas na consulta</td>
+            <tr class="table-light">
+                <td colspan="5" class="text-end fw-bold">Quantidade total de vendas na consulta</td>
                 <td>${dados.length}</td>
             </tr>
         `;
