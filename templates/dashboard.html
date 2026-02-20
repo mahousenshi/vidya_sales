@@ -128,6 +128,9 @@ function renderizarTabela(dados) {
 // --- 2. FUNÇÃO DE ATUALIZAÇÃO GERAL (LISTAGEM) ---
 async function atualizarTudo() {
     try {
+        // Limpa a busca
+        document.getElementById('inputBusca').value = ""
+
         // Busca vendas do Postgres (que você disse que já traz o comentário)
         const res = await fetch('/api/sales/');
         const vendas = await res.json();
@@ -194,6 +197,9 @@ document.getElementById('formVenda').onsubmit = async (e) => {
 
             // Feedback de sucesso (Toast ou Alert)
             alert("Adicionado com sucesso!");
+
+            // Limpa a busca
+            document.getElementById('inputBusca').value = ""
 
             // Recarrega a tela para mostrar a nova venda
             atualizarTudo();

@@ -49,7 +49,7 @@ def list_sales(db: Session = Depends(get_db)):
         comments_map[comment["sale_id"]].append(comment)
 
     for sale in sales:
-        sale_dict["comments"] = comments_map.get(sale.id, [])
+        sale.comments = comments_map.get(sale.id, [])
 
     return sales
 

@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 
 
-# Base
+# Sale Base
 class SaleBase(BaseModel):
     product_name: str = Field(..., min_length=3, description="Nome do produto vendido")
     category: str = Field(..., description="Categoria do produto")
@@ -23,7 +23,7 @@ class SaleBase(BaseModel):
         from_attributes = True
 
 
-# Criação
+# Sale Criação
 class SaleCreate(SaleBase):
     created_at: datetime = Field(..., description="Data da venda")
     comment: Optional[str] = Field(None, description="Comentário (Opcional)")
@@ -42,3 +42,12 @@ class SaleResponse(SaleBase):
 class SearchResult(BaseModel):
     comment: str
     sale: SaleResponse
+
+
+# Comment base
+class CommentSchema(BaseModel):
+    sale_id: int
+    comment: str
+
+    class Config:
+        from_attributes = True
