@@ -43,7 +43,7 @@ def list_sales(db: Session = Depends(get_db)):
     sales = db.query(models.Sale).all()
     results = []
 
-    comments_map = {c['sale_id']: c['comment'] for c in nosql_db.find()}
+    comments_map = {c['sale_id']: c['comment'] for c in nosql_db.comments.find()}
 
     for sale in sales:
         sale_dict = jsonable_encoder(sale)
