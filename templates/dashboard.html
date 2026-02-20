@@ -114,6 +114,12 @@ function renderizarTabela(dados) {
         `;
         corpo.innerHTML += linha;
     });
+    corpo.innerHTML += `
+            <tr>
+                <td>Quantidade total de Vendas na consulta</td>
+                <td colspan="4" class="text-center">${dados.length}</td>
+            </tr>
+        `;
 }
 
 // --- 2. FUNÇÃO DE ATUALIZAÇÃO GERAL (LISTAGEM) ---
@@ -144,8 +150,6 @@ async function executarBusca() {
         // Chama o endpoint de busca que filtra no MongoDB
         const res = await fetch(`/api/sales/search?q=${encodeURIComponent(termo)}`);
         const resultados = await res.json();
-
-        console.log(resultados)
 
         const vendas = [];
         resultados.forEach(resultado => {
@@ -202,8 +206,6 @@ async function atualizarGrafico(tipo) {
     try {
         const res = tipo == 'categoria' ? await fetch('/api/sales/quantity_categories') : await fetch('/api/sales/quantity_products');
         const data = await res.json();
-
-        console.log(data);
 
         // Desenha ou atualiza o Chart.js
         const ctx = document.getElementById('meuGrafico');
