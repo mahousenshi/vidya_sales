@@ -6,6 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from collections import defaultdict
 
 router = APIRouter()
 
@@ -41,16 +42,16 @@ def create_sale(sale: schemas.SaleCreate, db: Session = Depends(get_db)):
 @router.get("/sales/", response_model=List[schemas.SaleResponse])
 def list_sales(db: Session = Depends(get_db)):
     sales = db.query(models.Sale).all()
-    results = []
 
-    comments_map = {c['sale_id']: c['comment'] for c in nosql_db.comments.find()}
+    comments_map = defaultdict(list)
+    comments = nosql_db.comments.find({}, {"_id": 0})
+    for comment in comments:
+        comments_map[comment["sale_id"]].append(comment)
 
     for sale in sales:
-        sale_dict = jsonable_encoder(sale)
-        sale_dict["comments"] = comments_map.get(sale.id) if comments_map.get(sale.id) else []
-        results.append(sale_dict)
+        sale_dict["comments"] = comments_map.get(sale.id, [])
 
-    return results
+    return sales
 
 
 # Procurar em comentários
@@ -70,17 +71,31 @@ def search_comments(
             status_code=status.HTTP_404_NOT_FOUND, detail="o termo não foi encontrado"
         )
 
+    sale_ids = list(set(c["sale_id"] for c in comments_found))
+    sales = db.query(models.Sale).filter(models.Sale.id.in_(sale_ids)).all()
+    comments = list(nosql_db.comments.find(
+        {"sale_id": {"$in": sale_ids}},
+        {"_id": 0}
+    ))
+
+    comments_map = defaultdict(list)
+    for comment in comments:
+        comments_map[comment["sale_id"]].append(comment)
+
+    sales_map = {}
+    for sale in sales:
+        sale.comments = comments_map.get(sale.id, [])
+        sales_map[sale.id] = sale
+
     results = []
-    for doc in comments_found:
-        sale = db.query(models.Sale).filter(models.Sale.id == doc["sale_id"]).first()
+    for comment in comments_found:
+        sale_obj = sales_map.get(comment["sale_id"])
 
-        sale_dict = jsonable_encoder(sale)
-        comments = list(nosql_db.comments.find({"sale_id": sale.id}, {"_id": 0}))
-        sale_dict["comments"] = comments
+        sale = db.query(models.Sale).filter(models.Sale.id == comment["sale_id"]).first()
 
-        if sale:
+        if sale_obj:
             results.append(
-                {"comment": doc["comment"], "sale": jsonable_encoder(sale_dict)}
+                {"comment": comment["comment"], "sale": sale_obj}
             )
 
     return results

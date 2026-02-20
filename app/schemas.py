@@ -17,6 +17,10 @@ class SaleBase(BaseModel):
         description="Valor unitário (pelo menos 1)",
     )
     quantity: int = Field(..., ge=1, description="Quantidade vendidada (pelo menos 1)")
+    comments: List[CommentSchema] = []
+
+    class Config:
+        from_attributes = True
 
 
 # Criação
