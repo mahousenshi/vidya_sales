@@ -127,7 +127,7 @@ def quantity_by_all_categories(db: Session = Depends(get_db)):
 
 # Total de vendas por produto
 @router.get("/sales/quantity_products")
-def quantity_all_products(db: Session = Depends(get_db)):
+def quantity_by_all_products(db: Session = Depends(get_db)):
     results = (
         db.query(
             models.Sale.product_name, func.sum(models.Sale.quantity).label("total")

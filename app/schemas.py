@@ -14,7 +14,7 @@ class SaleBase(BaseModel):
         max_digits=10,
         decimal_places=2,
         json_schema_extra={"example": 150.50},
-        description="Valor unitário (pelo menos 1)",
+        description="Valor unitário (positivo)",
     )
     quantity: int = Field(..., ge=1, description="Quantidade vendidada (pelo menos 1)")
     comments: List[CommentSchema] = []
@@ -25,13 +25,12 @@ class SaleBase(BaseModel):
 
 # Sale Criação
 class SaleCreate(SaleBase):
-    created_at: datetime = Field(..., description="Data da venda")
-    comment: Optional[str] = Field(None, description="Comentário (Opcional)")
+    created_at: datetime = Field(..., description="Data da Venda")
 
 
 class SaleResponse(SaleBase):
     id: int
-    created_at: datetime
+    created_at: datetime = Field(..., description="Data da Venda")
     comments: List[dict] = []
 
     # Configuração para permitir que o Pydantic leia modelos do SQLAlchemy
@@ -40,14 +39,14 @@ class SaleResponse(SaleBase):
 
 # Busca Textual
 class SearchResult(BaseModel):
-    comment: str
+    comment: str = Field(..., description="Comentário da Venda")
     sale: SaleResponse
 
 
 # Comment base
 class CommentSchema(BaseModel):
-    sale_id: int
-    comment: str
+    sale_id: int = Field(..., description="Id da Venda")
+    comment: str = Field(..., description="Comentário da Venda")
 
     class Config:
         from_attributes = True
