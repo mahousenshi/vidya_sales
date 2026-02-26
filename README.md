@@ -22,7 +22,7 @@ O projeto utiliza uma arquitetura de banco de dados poliglota:
 1. **Clone o repositório:**
 
 ```bash
-git clone [https://github.com/mahousenshi/vidya_sales.git](https://github.com/mahousenshi/vidya_sales.git)
+git clone https://github.com/mahousenshi/vidya_sales.git
 cd vidya_sales
 ```
    
