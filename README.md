@@ -22,13 +22,13 @@ O projeto utiliza uma arquitetura de banco de dados poliglota:
 1. **Clone o repositório:**
 
 ```bash
-git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
-cd seu-repositorio
+git clone [https://github.com/mahousenshi/vidya_sales.git](https://github.com/mahousenshi/vidya_sales.git)
+cd vidya_sales
 ```
    
 2. **Configure as variáveis de ambiente:**
 
-Crie um arquivo .env na raiz do projeto com as seguintes chaves:
+Use como modelo o arquivo .env.example na raiz do projeto com as seguintes chaves:
 
 
 ```python
