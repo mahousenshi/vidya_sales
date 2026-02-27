@@ -92,21 +92,21 @@ A aplicação segue uma estrutura modular para separar a lógica de banco de dad
 
 ## 🌐 Endpoints Principais
 
-`GET /`: Mensagem de boas-vindas e status da API.
+- `GET /`: Mensagem de boas-vindas e status da API.
 
-`GET /api/sales/`: Lista todas as vendas.
+- `GET /api/sales/`: Lista todas as vendas.
 
-`POST /api/sales/`: Cria uma nova venda.
+- `POST /api/sales/`: Cria uma nova venda.
 
-`'GET /api/sales/search?q=<termo>`: Procura venda com o comentario.
+- `'GET /api/sales/search?q=<termo>`: Procura venda com o comentario.
 
-`GET /api/sales/total_revenue`: Retorna o total de feito com todas as vendas.
+- `GET /api/sales/total_revenue`: Retorna o total de feito com todas as vendas.
 
-`GET /api/sales/quantity_categories`: Retorna a quantidade vendida por categoria.
+- `GET /api/sales/quantity_categories`: Retorna a quantidade vendida por categoria.
 
-`GET /api/sales/quantity_products`: Retorna a quantidade vendida por produto.
+- `GET /api/sales/quantity_products`: Retorna a quantidade vendida por produto.
 
-`GET /docs`: Documentação interativa Swagger UI.
+- `GET /docs`: Documentação interativa Swagger UI.
 
 ---
 
