@@ -23,7 +23,7 @@ O projeto utiliza uma estratégia de armazenamento híbrido:
 1. **Clone o repositório:**
 
 ```bash
-git clone https://github.com/mahousenshi/vidya_sales.git
+git clone git@github.com/mahousenshi/vidya_sales.git
 cd vidya_sales
 ```
    
