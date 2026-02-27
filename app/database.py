@@ -19,7 +19,7 @@ MONGO_URL = os.getenv("MONGO_URL")
 
 mongo_client = MongoClient(MONGO_URL)
 nosql_db = mongo_client.get_database("vidya_analytics")
-nosql_db = mongo_client.comments
+
 
 # Garante que o banco abra e feche corretamente em cada chamada da API
 def get_db():
