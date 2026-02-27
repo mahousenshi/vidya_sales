@@ -104,7 +104,7 @@ A aplicação segue uma estrutura modular para separar a lógica de banco de dad
 
 - `POST /api/sales/`: Cria uma nova venda.
 
-- `'GET /api/sales/search?q=<termo>`: Procura venda com o comentario.
+- `GET /api/sales/search?q=<termo>`: Procura venda com o comentario.
 
 - `GET /api/sales/total_revenue`: Retorna o total de feito com todas as vendas.
 
