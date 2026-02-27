@@ -8,20 +8,18 @@ import os
 load_dotenv()
 
 # Configuração postgresql
-POSTGRESQL_DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql://usuario:senha@localhost:5432/vidya_db"
-)
+POSTGRESQL_DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(POSTGRESQL_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # Configuração mongodb
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://admin:password@localhost:27017/")
+MONGO_URL = os.getenv("MONGO_URL")
 
 mongo_client = MongoClient(MONGO_URL)
-db = mongo_client.get_database("vidya_analytics")
-nosql_db = db.comments
+nosql_db = mongo_client.get_database("vidya_analytics")
+nosql_db = mongo_client.comments
 
 # Garante que o banco abra e feche corretamente em cada chamada da API
 def get_db():
