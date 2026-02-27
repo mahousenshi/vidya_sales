@@ -32,7 +32,16 @@ COMENTARIOS = [
     "Solicitou suporte para instalação.",
     "Aproveitou a promoção da semana.",
     "Venda via indicação de outro cliente.",
-    None,  # Representa vendas sem comentário
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None, # Representa vendas sem comentário
 ]
 
 
