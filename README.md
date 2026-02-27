@@ -29,11 +29,17 @@ cd vidya_sales
    
 2. **Configure as variáveis de ambiente:**
 
-Use como modelo o arquivo .env.example na raiz do projeto com as seguintes chaves:
+Use como modelo o arquivo `.env.example` na raiz do projeto com as seguintes chaves:
 
 ```python
 DATABASE_URL=postgresql://usuario:senha@localhost:5432/vidya_db
 MONGO_URL=mongodb+srv://usuario:senha@cluster.mongodb.net/vidya_analytics
+```
+
+Se quiser crie o `.env` usando
+
+```Bash
+cp .env.example .env
 ```
 
 3. Inicie a infraestrutura de dados:
