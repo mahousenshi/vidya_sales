@@ -69,8 +69,7 @@ python seed.py
 uvicorn app.main:app --reload
 ```
 
-
-🏗️ Estrutura do Projeto
+## 🏗️ Estrutura do Projeto
 
 A aplicação segue uma estrutura modular para separar a lógica de banco de dados, modelos e rotas da API:
 
@@ -91,7 +90,7 @@ A aplicação segue uma estrutura modular para separar a lógica de banco de dad
 └── requirements.txt      # Dependências do sistema
 ```
 
-🌐 Endpoints Principais
+## 🌐 Endpoints Principais
 
 `GET /`: Mensagem de boas-vindas e status da API.
 
